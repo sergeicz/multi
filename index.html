@@ -1,15 +1,496 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KINETIC_COMMAND // ОПЕРАТОР_УЗЛА</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+
+<html class="dark" lang="ru"><head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ИЛЬЯ // ПОДПИСКИ И ДОНАТЫ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&family=Russo+One&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#a7b8a1",
+                        "error-container": "#93000a",
+                        "outline": "#4a5a45",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "primary-container": "#00ff41",
+                        "surface-container-low": "#0a0c10",
+                        "surface-container": "#0d1117",
+                        "on-secondary": "#003739",
+                        "on-background": "#e2e5ec",
+                        "outline-variant": "#2a3527",
+                        "surface-tint": "#00e639",
+                        "primary-fixed": "#72ff70",
+                        "primary-fixed-dim": "#00e639",
+                        "inverse-surface": "#dfe2eb",
+                        "surface-container-lowest": "#05070a",
+                        "surface-bright": "#1a1e24",
+                        "inverse-primary": "#006e16",
+                        "surface-container-high": "#14181e",
+                        "on-primary-fixed": "#002203",
+                        "secondary-container": "#00f4fe",
+                        "on-surface": "#dfe2eb",
+                        "background": "#05070a",
+                        "surface-dim": "#05070a",
+                        "surface-variant": "#1c2127",
+                        "surface-container-highest": "#21262d",
+                        "on-primary": "#003907",
+                        "on-primary-container": "#007117",
+                        "primary": "#ebffe2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    "fontFamily": {
+                        "headline": ["JetBrains Mono", "Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .layer-line-texture {
+            background-image: repeating-linear-gradient(0deg, rgba(0, 255, 65, 0.03) 0px, rgba(0, 255, 65, 0.03) 1px, transparent 1px, transparent 4px);
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 100;
+            background: linear-gradient(0deg, rgba(0, 255, 65, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 255, 65, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .flicker {
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.98; }
+            50% { opacity: 0.96; }
+            100% { opacity: 0.99; }
+        }
+        .typing {
+            overflow: hidden;
+            border-right: .15em solid #00ff41;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation:
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff41; }
+        }
+        .glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #00ff41;
+            animation: cursor-blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        @keyframes cursor-blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+        .card-depth {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(0, 255, 65, 0.05);
+            transition: all 0.3s ease;
+        }
+        .card-depth:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.15), inset 0 0 15px rgba(0, 255, 65, 0.1);
+            transform: translateY(-2px);
+        }
+        .asset-active {
+            background: rgba(0, 255, 65, 0.1) !important;
+            border-color: #00ff41 !important;
+            color: #00ff41 !important;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(0, 255, 65, 0.4);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden flicker">
+<div class="scanline"></div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-6 py-3 md:py-4 bg-surface-container-lowest/80 backdrop-blur-md border-b border-primary-container/10 font-headline tracking-tight uppercase">
+    <div class="text-lg md:text-xl font-bold tracking-tighter text-[#00FF41] hover:brightness-125 cursor-pointer">ИЛЬЯ</div>
+    <nav class="hidden md:flex space-x-8">
+        <a class="text-[#00FF41]/40 hover:text-[#00FF41] transition-all relative group" href="#social">
+            КАНАЛЫ
+            <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all duration-300"></span>
+        </a>
+        <a class="text-[#00FF41]/40 hover:text-[#00FF41] transition-all relative group" href="#donate">
+            ДОНАТЫ
+            <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all duration-300"></span>
+        </a>
+    </nav>
+    <div class="flex items-center space-x-3">
+        <span class="material-symbols-outlined text-[#00FF41] cursor-pointer hover:bg-[#00FF41]/10 p-1 transition-colors hidden md:block">terminal</span>
+        <div class="w-7 h-7 md:w-8 md:h-8 border border-[#00FF41]/30 flex items-center justify-center bg-surface-container overflow-hidden group">
+            <img alt="Аватар" class="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300" src="av.jpg"/>
+        </div>
+    </div>
+</header>
+
+<main class="pt-16 md:pt-24 pb-20 px-3 md:px-8 max-w-3xl mx-auto min-h-screen">
+
+    <!-- Profile Header -->
+    <section class="mb-6 md:mb-10 relative flex flex-row md:flex-row items-center md:items-end gap-4 md:gap-8 p-4 md:p-10 border border-outline-variant bg-surface-container-low layer-line-texture card-depth">
+        <div class="relative w-16 h-16 md:w-48 md:h-48 border-2 border-primary-container p-1 md:p-2 shadow-[0_0_20px_rgba(0,255,65,0.2)] flex-shrink-0">
+            <div class="absolute inset-0 border border-primary-container/20 translate-x-1 translate-y-1 hidden md:block"></div>
+            <div class="absolute inset-0 border border-primary-container/10 translate-x-2 translate-y-2 hidden md:block"></div>
+            <img alt="Аватар" class="w-full h-full object-cover grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300" src="av.jpg"/>
+            <div class="absolute -bottom-2 -right-2 bg-primary-container text-on-primary-container text-[8px] md:text-[10px] px-1.5 md:px-2 py-0.5 md:py-1 font-mono font-bold animate-pulse">
+                В ЭФИРЕ
+            </div>
+        </div>
+        <div class="flex-1 space-y-2 md:space-y-4 overflow-hidden min-w-0">
+            <div class="section-label hidden md:block">// Привет, я</div>
+            <h1 class="text-xl md:text-5xl font-headline font-black tracking-tighter text-primary-container typing">ИЛЬЯ</h1>
+            <p class="font-mono text-[10px] md:text-sm text-on-surface-variant leading-relaxed">
+                Занимаюсь разработкой software, а для души — hardware по радиосвязи.<br class="hidden md:block"/>
+                <span class="md:hidden"> </span>Стримлю игры, разговариваю. Подписывайся.
+            </p>
+            <div class="hidden md:flex flex-wrap gap-3 pt-2">
+                <span class="font-mono text-[10px] text-primary-container/60 border border-primary-container/20 px-3 py-1">СТРИМЫ</span>
+                <span class="font-mono text-[10px] text-primary-container/60 border border-primary-container/20 px-3 py-1">КОНТЕНТ</span>
+                <span class="font-mono text-[10px] text-primary-container/60 border border-primary-container/20 px-3 py-1">СООБЩЕСТВО</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Links -->
+    <section id="social" class="mb-6 md:mb-10">
+        <div class="section-label mb-2 md:mb-4">// Подписывайся на меня</div>
+        <h2 class="font-headline text-lg md:text-2xl font-bold tracking-tight text-primary-container uppercase mb-3 md:mb-6">МОИ КАНАЛЫ</h2>
+
+        <div class="flex flex-col gap-2 md:gap-3">
+
+            <a class="group flex items-center justify-between border border-outline-variant bg-surface-container px-4 md:px-5 py-3 md:py-4 hover:bg-surface-container-high hover:border-primary-container/50 transition-all card-depth" href="https://www.twitch.tv/worknotdead" target="_blank">
+                <div class="flex items-center gap-3 md:gap-4 min-w-0">
+                    <i class="fa-brands fa-twitch text-xl md:text-2xl text-primary-container group-hover:scale-110 transition-transform w-5 md:w-6 text-center flex-shrink-0"></i>
+                    <div class="min-w-0">
+                        <div class="font-mono text-xs md:text-sm font-bold tracking-widest text-primary-container glitch">TWITCH</div>
+                        <div class="font-mono text-[10px] text-on-surface-variant/50 truncate">Прямые трансляции — смотри вживую</div>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-sm text-primary-container/40 group-hover:text-primary-container group-hover:translate-x-1 transition-all flex-shrink-0 ml-2">arrow_forward_ios</span>
+            </a>
+
+            <a class="group flex items-center justify-between border border-outline-variant bg-surface-container px-4 md:px-5 py-3 md:py-4 hover:bg-surface-container-high hover:border-primary-container/50 transition-all card-depth" href="https://www.youtube.com/@ebashordie" target="_blank">
+                <div class="flex items-center gap-3 md:gap-4 min-w-0">
+                    <i class="fa-brands fa-youtube text-xl md:text-2xl text-primary-container group-hover:scale-110 transition-transform w-5 md:w-6 text-center flex-shrink-0"></i>
+                    <div class="min-w-0">
+                        <div class="font-mono text-xs md:text-sm font-bold tracking-widest text-primary-container glitch">YOUTUBE</div>
+                        <div class="font-mono text-[10px] text-on-surface-variant/50 truncate">Записи стримов и нарезки</div>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-sm text-primary-container/40 group-hover:text-primary-container group-hover:translate-x-1 transition-all flex-shrink-0 ml-2">arrow_forward_ios</span>
+            </a>
+
+            <a class="group flex items-center justify-between border border-outline-variant bg-surface-container px-4 md:px-5 py-3 md:py-4 hover:bg-surface-container-high hover:border-primary-container/50 transition-all card-depth" href="https://www.tiktok.com/@sergeicz.i" target="_blank">
+                <div class="flex items-center gap-3 md:gap-4 min-w-0">
+                    <i class="fa-brands fa-tiktok text-xl md:text-2xl text-primary-container group-hover:rotate-12 transition-transform w-5 md:w-6 text-center flex-shrink-0"></i>
+                    <div class="min-w-0">
+                        <div class="font-mono text-xs md:text-sm font-bold tracking-widest text-primary-container glitch">TIKTOK</div>
+                        <div class="font-mono text-[10px] text-on-surface-variant/50 truncate">Короткие видео и хайлайты</div>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-sm text-primary-container/40 group-hover:text-primary-container group-hover:translate-x-1 transition-all flex-shrink-0 ml-2">arrow_forward_ios</span>
+            </a>
+
+            <a class="group flex items-center justify-between border border-outline-variant bg-surface-container px-4 md:px-5 py-3 md:py-4 hover:bg-surface-container-high hover:border-primary-container/50 transition-all card-depth" href="https://max.ru/id503501079307_1_bot?startapp=TLbefc1d66c4d1-Tctranica" target="_blank">
+                <div class="flex items-center gap-3 md:gap-4 min-w-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 text-primary-container group-hover:scale-110 transition-transform" fill="currentColor"><path d="M350.4,9.6C141.8,20.5,4.1,184.1,12.8,390.4c3.8,90.3,40.1,168,48.7,253.7,2.2,22.2-4.2,49.6,21.4,59.3,31.5,11.9,79.8-8.1,106.2-26.4,9-6.1,17.6-13.2,24.2-22,27.3,18.1,53.2,35.6,85.7,43.4,143.1,34.3,299.9-44.2,369.6-170.3C799.6,291.2,622.5-4.6,350.4,9.6h0ZM269.4,504c-11.3,8.8-22.2,20.8-34.7,27.7-18.1,9.7-23.7-.4-30.5-16.4-21.4-50.9-24-137.6-11.5-190.9,16.8-72.5,72.9-136.3,150-143.1,78-6.9,150.4,32.7,183.1,104.2,72.4,159.1-112.9,316.2-256.4,218.6h0Z"/></svg>
+                    <div class="min-w-0">
+                        <div class="font-mono text-xs md:text-sm font-bold tracking-widest text-primary-container glitch">MAX</div>
+                        <div class="font-mono text-[10px] text-on-surface-variant/50 truncate">Для тех, у кого чебурнет</div>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-sm text-primary-container/40 group-hover:text-primary-container group-hover:translate-x-1 transition-all flex-shrink-0 ml-2">arrow_forward_ios</span>
+            </a>
+
+            <a class="group relative flex items-center justify-between border border-primary-container/40 bg-primary-container/5 px-4 md:px-5 py-3 md:py-5 hover:bg-primary-container/10 transition-all card-depth overflow-hidden" href="https://t.me/+1YN5ke1Kqtw0MDA6" target="_blank">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-container/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <div class="flex items-center gap-3 md:gap-4 relative min-w-0">
+                    <i class="fa-brands fa-telegram text-xl md:text-2xl text-primary-container group-hover:translate-x-1 transition-transform w-5 md:w-6 text-center flex-shrink-0"></i>
+                    <div class="min-w-0">
+                        <div class="font-mono text-xs md:text-sm font-bold tracking-widest text-primary-container glitch">TELEGRAM</div>
+                        <div class="font-mono text-[10px] text-primary-container/50 truncate">Лайфстайл и эксклюзив для своих</div>
+                    </div>
+                </div>
+                <span class="font-mono text-[10px] text-primary-container/80 relative flex-shrink-0 ml-2">ПОДПИСАТЬСЯ →</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Donation Terminal -->
+    <section id="donate" class="border border-outline-variant bg-surface-container-lowest p-1 shadow-2xl mb-8 md:mb-10">
+        <div class="bg-surface-container-low p-4 md:p-8 border border-outline-variant/50">
+
+            <div class="section-label mb-1 md:mb-2">// Поддержи проект</div>
+            <div class="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
+                <div class="w-2 h-2 md:w-3 md:h-3 bg-primary-container animate-ping flex-shrink-0"></div>
+                <h2 class="font-headline text-lg md:text-2xl font-bold tracking-tight text-primary-container uppercase glitch">ЗАДОНАТИТЬ</h2>
+            </div>
+            <p class="font-mono text-[10px] md:text-xs text-on-surface-variant/60 mb-4 md:mb-8 leading-relaxed">
+                Выбери удобный способ — покажем адрес и QR-код.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6" id="asset-selector">
+
+                <button class="asset-btn group flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border border-outline/30 text-on-surface-variant font-mono text-xs md:text-sm hover:bg-surface-container-high transition-all text-left card-depth"
+                    data-address="TUnZdiHUxH4ErKqNmBEjL7zu8ogLGE6Y9q"
+                    data-qr="usdt.jpg">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-base md:text-lg text-primary-container/60 group-hover:text-primary-container transition-colors flex-shrink-0">account_balance_wallet</span>
+                        <span class="glitch">USDT (TRC20)</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform flex-shrink-0">arrow_forward_ios</span>
+                </button>
+
+                <button class="asset-btn group flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border border-outline/30 text-on-surface-variant font-mono text-xs md:text-sm hover:bg-surface-container-high transition-all text-left card-depth"
+                    data-address="bc1q8f6dfae59sjf3dksc39qw9k3pmakngymcumg49"
+                    data-qr="btc.jpg">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-base md:text-lg text-primary-container/60 group-hover:text-primary-container transition-colors flex-shrink-0">currency_bitcoin</span>
+                        <span class="glitch">BTC</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform flex-shrink-0">arrow_forward_ios</span>
+                </button>
+
+                <button class="asset-btn group flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border border-outline/30 text-on-surface-variant font-mono text-xs md:text-sm hover:bg-surface-container-high transition-all text-left card-depth"
+                    data-address="0xf106Ea1d77d15989090Ae3E0C26c6cF12FD14cBB"
+                    data-qr="eth.jpg">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-base md:text-lg text-primary-container/60 group-hover:text-primary-container transition-colors flex-shrink-0">token</span>
+                        <span class="glitch">ETH (ERC20)</span>
+                    </div>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform flex-shrink-0">arrow_forward_ios</span>
+                </button>
+
+                <button class="asset-btn md:col-span-2 lg:col-span-3 group flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border border-outline/30 text-on-surface-variant font-mono text-xs md:text-sm hover:bg-surface-container-high transition-all text-left card-depth"
+                    data-address="https://www.donationalerts.com/c/worknotdead"
+                    data-qr="https://files.donationalerts.com/uploads/qr/15413916/qr_19ab3eea84bb72dd86012dda4c5a32d5.png"
+                    data-action="link">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-base md:text-lg text-primary-container/60 group-hover:text-primary-container transition-colors flex-shrink-0">favorite</span>
+                        <div>
+                            <div class="glitch">DonationAlerts</div>
+                            <div class="text-[9px] md:text-[10px] text-on-surface-variant/40 normal-case tracking-normal">Рубли — карта, СБП</div>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform flex-shrink-0">arrow_forward_ios</span>
+                </button>
+
+            </div>
+
+            <!-- Terminal Output -->
+            <div class="bg-black/40 border border-outline-variant/30 p-3 md:p-6 font-mono relative overflow-hidden min-h-[120px] md:min-h-[140px] flex flex-col justify-center">
+                <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-container/20 to-transparent"></div>
+                <div class="flex items-center justify-between text-[9px] md:text-[10px] text-on-surface-variant/50 mb-3 md:mb-5 pb-2 border-b border-outline-variant/10 gap-2">
+                    <span class="truncate">ТЕРМИНАЛ // АДРЕС</span>
+                    <span class="flex items-center gap-1.5 flex-shrink-0" id="terminal-status">
+                        <span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30"></span><span>ОЖИДАНИЕ</span>
+                    </span>
+                </div>
+                <div class="flex items-center justify-center py-3" id="terminal-placeholder">
+                    <p class="text-primary-container/40 text-[10px] tracking-widest animate-pulse">ВЫБЕРИ СПОСОБ...<span class="terminal-cursor"></span></p>
+                </div>
+                <div class="hidden flex-col gap-3" id="terminal-result">
+                    <div class="text-primary-container text-[10px] md:text-xs font-bold bg-primary-container/5 p-2 md:p-3 border-l-2 border-primary-container" style="word-break:break-all" id="address-text">-</div>
+                    <div class="flex items-center gap-3">
+                        <button id="copy-btn" class="flex-1 flex items-center justify-center gap-2 bg-primary-container text-on-primary-container px-4 py-2.5 hover:brightness-110 active:scale-95 transition-all font-bold text-[10px] md:text-xs shadow-[0_0_15px_rgba(0,255,65,0.3)]">
+                            <span class="material-symbols-outlined text-sm" id="copy-icon">content_copy</span>
+                            <span id="copy-label">СКОПИРОВАТЬ</span>
+                        </button>
+                        <div class="border border-primary-container/30 bg-black p-1 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <img alt="QR" class="w-full h-full object-contain grayscale brightness-125 contrast-125 hover:grayscale-0 transition-all duration-700" id="qr-image" src=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="grid grid-cols-4 gap-4 md:gap-8 mt-4 mb-16 opacity-30">
+        <div class="h-0.5 bg-outline-variant/50"></div>
+        <div class="h-0.5 bg-outline-variant/50"></div>
+        <div class="h-0.5 bg-primary-container/50 shadow-[0_0_8px_rgba(0,255,65,1)]"></div>
+        <div class="h-0.5 bg-outline-variant/50"></div>
+    </div>
+
+</main>
+
+<!-- SideNavBar -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full z-40 flex-col bg-surface-container-lowest border-r border-outline-variant/10 w-16 hover:w-64 transition-all duration-500 group font-mono text-xs uppercase tracking-widest overflow-hidden">
+    <div class="p-4 flex items-center space-x-3 mb-8 mt-20">
+        <span class="material-symbols-outlined text-primary-container animate-pulse flex-shrink-0">precision_manufacturing</span>
+        <div class="hidden group-hover:block overflow-hidden whitespace-nowrap">
+            <div class="text-lg font-black text-[#00FF41] glitch">ПОДПИСАТЬСЯ</div>
+            <div class="text-[10px] text-on-surface-variant/60">ИЛЬЯ</div>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center space-x-4 bg-primary-container/5 text-[#00FF41] border-l-2 border-[#00FF41] px-4 py-4 hover:bg-primary-container/10 transition-all" href="https://www.twitch.tv/worknotdead" target="_blank">
+            <i class="fa-brands fa-twitch w-6 text-center flex-shrink-0"></i>
+            <span class="hidden group-hover:block glitch whitespace-nowrap">TWITCH</span>
+        </a>
+        <a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="https://www.youtube.com/@ebashordie" target="_blank">
+            <i class="fa-brands fa-youtube w-6 text-center flex-shrink-0"></i>
+            <span class="hidden group-hover:block glitch whitespace-nowrap">YOUTUBE</span>
+        </a>
+        <a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="https://www.tiktok.com/@sergeicz.i" target="_blank">
+            <i class="fa-brands fa-tiktok w-6 text-center flex-shrink-0"></i>
+            <span class="hidden group-hover:block glitch whitespace-nowrap">TIKTOK</span>
+        </a>
+        <a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="https://t.me/+1YN5ke1Kqtw0MDA6" target="_blank">
+            <i class="fa-brands fa-telegram w-6 text-center flex-shrink-0"></i>
+            <span class="hidden group-hover:block glitch whitespace-nowrap">TELEGRAM</span>
+        </a>
+        <a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="https://max.ru/id503501079307_1_bot?startapp=TLbefc1d66c4d1-Tctranica" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" class="w-5 h-5 flex-shrink-0" fill="currentColor"><path d="M350.4,9.6C141.8,20.5,4.1,184.1,12.8,390.4c3.8,90.3,40.1,168,48.7,253.7,2.2,22.2-4.2,49.6,21.4,59.3,31.5,11.9,79.8-8.1,106.2-26.4,9-6.1,17.6-13.2,24.2-22,27.3,18.1,53.2,35.6,85.7,43.4,143.1,34.3,299.9-44.2,369.6-170.3C799.6,291.2,622.5-4.6,350.4,9.6h0ZM269.4,504c-11.3,8.8-22.2,20.8-34.7,27.7-18.1,9.7-23.7-.4-30.5-16.4-21.4-50.9-24-137.6-11.5-190.9,16.8-72.5,72.9-136.3,150-143.1,78-6.9,150.4,32.7,183.1,104.2,72.4,159.1-112.9,316.2-256.4,218.6h0Z"/></svg>
+            <span class="hidden group-hover:block glitch whitespace-nowrap">MAX</span>
+        </a>
+    </nav>
+    <div class="p-4 mt-auto border-t border-outline-variant/10 bg-black/20">
+        <a href="#donate" class="w-full bg-primary-container text-on-primary-container px-2 py-3 text-[10px] font-bold hidden group-hover:flex items-center justify-center gap-2 mb-4 shadow-[0_0_10px_rgba(0,255,65,0.2)] hover:brightness-110 transition-all">
+            <span class="material-symbols-outlined text-sm">favorite</span>
+            ЗАДОНАТИТЬ
+        </a>
+    </div>
+</aside>
+
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 px-4 py-2 flex justify-between items-center bg-surface-container-lowest/90 backdrop-blur-sm border-t border-primary-container/10 font-mono text-[9px] uppercase tracking-widest">
+    <div class="text-on-surface-variant/30">© 2024 ИЛЬЯ</div>
+    <div class="flex items-center gap-2">
+        <div class="w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_8px_#00FF41] animate-pulse"></div>
+        <span class="text-[#00FF41] font-bold">ОНЛАЙН</span>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const assetBtns = document.querySelectorAll('.asset-btn');
+        const placeholder = document.getElementById('terminal-placeholder');
+        const result = document.getElementById('terminal-result');
+        const addressText = document.getElementById('address-text');
+        const qrImage = document.getElementById('qr-image');
+        const terminalStatus = document.getElementById('terminal-status');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyLabel = document.getElementById('copy-label');
+        const copyIcon = document.getElementById('copy-icon');
+        let currentAddress = '';
+        let currentAction = 'copy';
+
+        assetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                assetBtns.forEach(b => b.classList.remove('asset-active'));
+                btn.classList.add('asset-active');
+
+                currentAddress = btn.getAttribute('data-address');
+                currentAction = btn.getAttribute('data-action') || 'copy';
+                const qrUrl = btn.getAttribute('data-qr');
+
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                result.classList.add('flex');
+
+                addressText.textContent = '';
+                let i = 0;
+                const typeInterval = setInterval(() => {
+                    if (i < currentAddress.length) {
+                        addressText.textContent += currentAddress.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typeInterval);
+                    }
+                }, 10);
+
+                qrImage.src = qrUrl;
+
+                if (currentAction === 'link') {
+                    copyIcon.textContent = 'open_in_new';
+                    copyLabel.textContent = 'ЗАДОНАТИТЬ';
+                } else {
+                    copyIcon.textContent = 'content_copy';
+                    copyLabel.textContent = 'СКОПИРОВАТЬ АДРЕС';
+                }
+
+                terminalStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> [ СТАТУС: ЗАГРУЗКА ]';
+                setTimeout(() => {
+                    terminalStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span> [ СТАТУС: ГОТОВО ]';
+                }, 800);
+            });
+        });
+
+        copyBtn.addEventListener('click', () => {
+            if (!currentAddress) return;
+            if (currentAction === 'link') {
+                window.open(currentAddress, '_blank');
+            } else {
+                navigator.clipboard.writeText(currentAddress).then(() => {
+                    copyLabel.textContent = 'СКОПИРОВАНО!';
+                    setTimeout(() => { copyLabel.textContent = 'СКОПИРОВАТЬ АДРЕС'; }, 2000);
+                });
+            }
+        });
+    });
+</script>
+</body></html>
