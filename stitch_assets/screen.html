@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KINETIC_COMMAND // NODE_OPERATOR</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#a7b8a1",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#5d4124",
+                        "outline": "#4a5a45",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#ffd5ae",
+                        "primary-container": "#00ff41",
+                        "surface-container-low": "#0a0c10",
+                        "tertiary": "#fff8f4",
+                        "secondary": "#e6feff",
+                        "surface-container": "#0d1117",
+                        "on-tertiary": "#442b10",
+                        "on-secondary": "#003739",
+                        "on-background": "#e2e5ec",
+                        "outline-variant": "#2a3527",
+                        "surface-tint": "#00e639",
+                        "primary-fixed": "#72ff70",
+                        "tertiary-fixed": "#ffdcbd",
+                        "on-primary-fixed-variant": "#00530e",
+                        "primary-fixed-dim": "#00e639",
+                        "inverse-surface": "#dfe2eb",
+                        "surface-container-lowest": "#05070a",
+                        "surface-bright": "#1a1e24",
+                        "inverse-primary": "#006e16",
+                        "surface-container-high": "#14181e",
+                        "tertiary-fixed-dim": "#e7bf99",
+                        "on-tertiary-fixed": "#2c1701",
+                        "primary": "#ebffe2",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "surface": "#07090c",
+                        "secondary-fixed": "#63f7ff",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-container": "#7a5b3c",
+                        "on-secondary-container": "#006c71",
+                        "on-primary": "#003907",
+                        "inverse-on-surface": "#2d3137",
+                        "on-primary-container": "#007117",
+                        "on-primary-fixed": "#002203",
+                        "secondary-container": "#00f4fe",
+                        "on-surface": "#dfe2eb",
+                        "background": "#05070a",
+                        "secondary-fixed-dim": "#00dce5",
+                        "surface-dim": "#05070a",
+                        "surface-variant": "#1c2127",
+                        "surface-container-highest": "#21262d",
+                        "on-secondary-fixed": "#002021"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .layer-line-texture {
+            background-image: repeating-linear-gradient(0deg, rgba(0, 255, 65, 0.03) 0px, rgba(0, 255, 65, 0.03) 1px, transparent 1px, transparent 4px);
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 100;
+            background: linear-gradient(0deg, rgba(0, 255, 65, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 255, 65, 0) 100%);
+            opacity: 0.1;
+            position: fixed;
+            bottom: 100%;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .flicker {
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.98; }
+            50% { opacity: 0.96; }
+            100% { opacity: 0.99; }
+        }
+        .typing {
+            overflow: hidden;
+            border-right: .15em solid #00ff41;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff41; }
+        }
+        .glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #00ff41;
+            animation: cursor-blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        @keyframes cursor-blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+        .card-depth {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(0, 255, 65, 0.05);
+            transition: all 0.3s ease;
+        }
+        .card-depth:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.15), inset 0 0 15px rgba(0, 255, 65, 0.1);
+            transform: translateY(-2px);
+        }
+        .asset-active {
+            background: rgba(0, 255, 65, 0.1) !important;
+            border-color: #00ff41 !important;
+            color: #00ff41 !important;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden flicker">
+<div class="scanline"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface-container-lowest/80 backdrop-blur-md border-b border-primary-container/10 font-['Space_Grotesk'] tracking-tight uppercase">
+<div class="text-xl font-bold tracking-tighter text-[#00FF41] hover:brightness-125 cursor-pointer">KINETIC_COMMAND</div>
+<nav class="hidden md:flex space-x-8">
+<a class="text-[#00FF41]/40 hover:text-[#00FF41] transition-all relative group" href="#">
+            FABRICATION
+            <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all duration-300"></span>
+</a>
+<a class="text-[#00FF41]/40 hover:text-[#00FF41] transition-all relative group" href="#">
+            CHANNELS
+            <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all duration-300"></span>
+</a>
+<a class="text-[#00FF41]/40 hover:text-[#00FF41] transition-all relative group" href="#">
+            DEPOSITS
+            <span class="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all duration-300"></span>
+</a>
+</nav>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-[#00FF41] cursor-pointer hover:bg-[#00FF41]/10 p-1 transition-colors">terminal</span>
+<span class="material-symbols-outlined text-[#00FF41] cursor-pointer hover:bg-[#00FF41]/10 p-1 transition-colors">settings_input_component</span>
+<div class="w-8 h-8 border border-[#00FF41]/30 flex items-center justify-center bg-surface-container overflow-hidden group">
+<img alt="User profile avatar" class="w-full h-full object-cover grayscale brightness-110 contrast-125 group-hover:scale-110 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ7k1X0yvMvyEQBJJKqQTwk__9txjbypqJOs2Sjl0i67cmtl9MCLoG0hr-AIkwZzULPPayGKJOyweEZvqx8ZpfSdwK3hNvnFEjbnbPLgSoCLpbW-EVTGJF7kxaeyRgPeKgDqinStpuWh5Nv986qXGv_PXYh_qVnCxK6wJfTQiDJHs9-RJWy0_LHMkuvNAvqCXfFF-ATzG3KKfIOh6__f1RGs5VZt8oQ2bvk-2a-rYavApQTzzh1QMODtyyzj2_bPfHHVxpBrCF2sI"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto min-h-screen">
+<!-- Profile Header Section -->
+<section class="mb-12 relative flex flex-col md:flex-row items-center md:items-end gap-8 p-10 border border-outline-variant bg-surface-container-low layer-line-texture card-depth">
+<div class="relative w-48 h-48 border-2 border-primary-container p-2 shadow-[0_0_20px_rgba(0,255,65,0.2)]">
+<div class="absolute inset-0 border border-primary-container/20 translate-x-1 translate-y-1"></div>
+<div class="absolute inset-0 border border-primary-container/10 translate-x-2 translate-y-2"></div>
+<img alt="Avatar" class="w-full h-full object-cover filter contrast-150 saturate-0 hue-rotate-90 hover:saturate-50 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX43na7M69Txqm89IV901tRVPf6hB54K_ov1N95gEkz0R-QW6wktYhOTfqX7qNI6kypf5U1Bujk0XVCqK4ugKmcigd4iSul-4KuBqlriwVf8WAOX10nvhfQHKCere04vId0zfumfxweYtZFVfeuNRqLIgKTtaTMS5NFpVxYsF7tfU5OdKboqiv_C40-lFL4CeMs5tnzQYBktUZBgtGReOiRE2kEr9CSrrVe4-kg-SAn4xf15p0d8EFFkGo4_v7oA6LGREyQDQ1U6E"/>
+<div class="absolute -bottom-2 -right-2 bg-primary-container text-on-primary-container text-[10px] px-2 py-1 font-mono font-bold animate-pulse">
+                ACTIVE_PRINT
+            </div>
+</div>
+<div class="flex-1 space-y-4 text-center md:text-left overflow-hidden">
+<div class="inline-block">
+<h1 class="text-4xl md:text-6xl font-headline font-black tracking-tighter text-primary-container typing">NODE_OPERATOR</h1>
+</div>
+<div class="flex flex-col md:flex-row gap-4 items-center">
+<p class="font-mono text-sm tracking-widest text-on-surface-variant bg-surface-container-highest/50 px-3 py-1 border-l-2 border-primary-container shadow-lg">
+                    ESTIMATED_PRINT_TIME: <span class="text-primary-fixed">14H 22M</span>
+</p>
+<div class="flex items-center gap-2 text-primary-container/40 font-mono text-xs hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-xs animate-spin-slow">precision_manufacturing</span>
+<span>CORE: V.4.0.2</span>
+</div>
+</div>
+</div>
+<div class="hidden lg:block absolute top-6 right-6 font-mono text-[10px] text-primary-container/20 leading-loose border-r border-primary-container/20 pr-4">
+            X: 124.0<br/>Y: 88.2<br/>Z: 14.5
+        </div>
+</section>
+<!-- Social Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+<!-- TWITCH -->
+<a class="col-span-2 group relative border border-outline-variant bg-surface-container overflow-hidden p-6 hover:bg-surface-container-high transition-all card-depth" href="#">
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-3xl text-primary-container group-hover:scale-110 transition-transform">videocam</span>
+<span class="text-[10px] font-mono text-outline">01</span>
+</div>
+<h3 class="font-mono text-lg font-bold tracking-widest text-primary-container glitch">TWITCH</h3>
+<div class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary-container group-hover:w-full transition-all duration-500"></div>
+</a>
+<!-- TIKTOK -->
+<a class="group relative border border-outline-variant bg-surface-container overflow-hidden p-6 hover:bg-surface-container-high transition-all card-depth" href="#">
+<span class="material-symbols-outlined text-2xl text-primary-container mb-4 group-hover:rotate-12 transition-transform">video_library</span>
+<h3 class="font-mono text-sm font-bold tracking-widest text-primary-container glitch">TIKTOK</h3>
+</a>
+<!-- INSTAGRAM -->
+<a class="group relative border border-outline-variant bg-surface-container overflow-hidden p-6 hover:bg-surface-container-high transition-all card-depth" href="#">
+<span class="material-symbols-outlined text-2xl text-primary-container mb-4 group-hover:-rotate-12 transition-transform">photo_camera</span>
+<h3 class="font-mono text-sm font-bold tracking-widest text-primary-container glitch">INSTAGRAM</h3>
+</a>
+<!-- YOUTUBE -->
+<a class="col-span-2 md:col-span-1 lg:col-span-2 group relative border border-outline-variant bg-surface-container overflow-hidden p-6 hover:bg-surface-container-high transition-all card-depth" href="#">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-mono text-lg font-bold tracking-widest text-primary-container glitch">YOUTUBE</h3>
+<span class="material-symbols-outlined text-2xl text-primary-container">subscriptions</span>
+</div>
+<p class="font-mono text-[10px] text-on-surface-variant/40">ARCHIVE_STREAM_DATA</p>
+</a>
+<!-- TELEGRAM -->
+<a class="col-span-2 md:col-span-1 lg:col-span-6 group flex items-center justify-between border border-primary-container/30 bg-primary-container/5 px-6 py-5 hover:bg-primary-container/10 transition-all card-depth overflow-hidden" href="#">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-container/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+<div class="flex items-center gap-4 relative">
+<span class="material-symbols-outlined text-2xl text-primary-container group-hover:translate-x-1 transition-transform">send</span>
+<h3 class="font-mono text-sm font-bold tracking-[0.4em] text-primary-container glitch">JOIN_TELEGRAM_CLUSTER</h3>
+</div>
+<span class="font-mono text-xs text-primary-container/60 relative">EST_WAIT: 0ms</span>
+</a>
+</section>
+<!-- Donation Terminal Section -->
+<section class="border border-outline-variant bg-surface-container-lowest p-1 shadow-2xl">
+<div class="bg-surface-container-low p-8 border border-outline-variant/50">
+<div class="flex items-center gap-4 mb-10">
+<div class="w-3 h-3 bg-primary-container animate-ping"></div>
+<h2 class="font-headline text-2xl font-bold tracking-tight text-primary-container uppercase glitch">EXTERNAL_FUNDING</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10" id="asset-selector">
+<button class="asset-btn group flex items-center justify-between px-6 py-4 border border-outline/30 text-on-surface-variant font-mono text-sm hover:bg-surface-container-high transition-all text-left card-depth" data-address="T9zBqxYSVovzY4j73MTRtYn9pZNo2D8T8K" data-qr="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=T9zBqxYSVovzY4j73MTRtYn9pZNo2D8T8K&amp;color=00ff41&amp;bgcolor=0a0c10"><div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary-container/60 group-hover:text-primary-container transition-colors">account_balance_wallet</span>
+<span class="glitch">USDT (TRC20)</span>
+</div>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward_ios</span></button>
+<button class="asset-btn group flex items-center justify-between px-6 py-4 border border-outline/30 text-on-surface-variant font-mono text-sm hover:bg-surface-container-high transition-all text-left card-depth" data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" data-qr="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh&amp;color=00ff41&amp;bgcolor=0a0c10"><div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary-container/60 group-hover:text-primary-container transition-colors">currency_bitcoin</span>
+<span class="glitch">BTC</span>
+</div>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward_ios</span></button>
+<button class="asset-btn group flex items-center justify-between px-6 py-4 border border-outline/30 text-on-surface-variant font-mono text-sm hover:bg-surface-container-high transition-all text-left card-depth" data-address="0x71C7656EC7ab88b098defB751B7401B5f6d8976F" data-qr="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=0x71C7656EC7ab88b098defB751B7401B5f6d8976F&amp;color=00ff41&amp;bgcolor=0a0c10"><div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary-container/60 group-hover:text-primary-container transition-colors">token</span>
+<span class="glitch">ETH (ERC20)</span>
+</div>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward_ios</span></button>
+<div class="col-span-1 lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+<button class="asset-btn group flex items-center justify-between px-3 sm:px-6 py-4 border border-outline/30 text-on-surface-variant font-mono text-[10px] sm:text-sm hover:bg-surface-container-high transition-all text-left card-depth" data-address="DONATIONALERTS_ID_12345" data-qr="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=DonationAlerts_ID&amp;color=00ff41&amp;bgcolor=0a0c10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary-container/60 group-hover:text-primary-container transition-colors">favorite</span>
+<span class="glitch">DonationAlerts</span>
+</div>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+<button class="asset-btn group flex items-center justify-between px-3 sm:px-6 py-4 border border-outline/30 text-on-surface-variant font-mono text-[10px] sm:text-sm hover:bg-surface-container-high transition-all text-left card-depth" data-address="DONATEPAY_ID_67890" data-qr="https://api.qrserver.com/v1/create-qr-code/?size=150x150&amp;data=DonatePay_ID&amp;color=00ff41&amp;bgcolor=0a0c10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary-container/60 group-hover:text-primary-container transition-colors">payments</span>
+<span class="glitch">DonatePay</span>
+</div>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+</div></div>
+<div class="bg-black/40 border border-outline-variant/30 p-6 font-mono relative overflow-hidden min-h-[140px] flex flex-col justify-center">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-container/20 to-transparent"></div>
+<div class="flex items-center justify-between text-[10px] text-on-surface-variant/50 mb-6 pb-2 border-b border-outline-variant/10">
+<span>TERMINAL_OUTPUT // ADDRESS_QUERY</span>
+<span class="flex items-center gap-2" id="terminal-status"><span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant/30"></span> [ STATUS: AWAITING_INPUT ]</span>
+</div>
+<!-- Empty State -->
+<div class="flex items-center justify-center py-4" id="terminal-placeholder">
+<p class="text-primary-container/40 text-xs tracking-widest animate-pulse">SELECT ASSET FOR ADDRESS_QUERY...<span class="terminal-cursor"></span></p>
+</div>
+<!-- Result State -->
+<div class="hidden flex-col md:flex-row items-center justify-between gap-8" id="terminal-result">
+<div class="flex-1 space-y-4 w-full">
+<div class="text-primary-container text-sm break-all font-bold tracking-wider bg-primary-container/5 p-3 border-l-2 border-primary-container" id="address-text">
+                            -
+                        </div>
+<button class="relative flex items-center gap-3 bg-primary-container text-on-primary-container px-6 py-3 hover:brightness-110 active:scale-95 transition-all font-bold text-xs shadow-[0_0_15px_rgba(0,255,65,0.3)] w-full md:w-auto">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+<span>COPY_ADDRESS</span>
+</button>
+</div>
+<div class="relative group">
+<div class="absolute -inset-1 bg-primary-container/20 blur-sm group-hover:bg-primary-container/40 transition-all"></div>
+<div class="relative border border-primary-container/30 bg-black p-2 w-32 h-32 flex items-center justify-center overflow-hidden">
+<img alt="QR Code" class="w-full h-full grayscale brightness-125 contrast-125 hover:grayscale-0 transition-all duration-700" id="qr-image" src=""/>
+<div class="absolute top-0 left-0 w-full h-full border-2 border-primary-container/10 pointer-events-none"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Aesthetic Geometry Layer -->
+<div class="grid grid-cols-4 gap-8 mt-16 opacity-30">
+<div class="h-0.5 bg-outline-variant/50"></div>
+<div class="h-0.5 bg-outline-variant/50"></div>
+<div class="h-0.5 bg-primary-container/50 shadow-[0_0_8px_rgba(0,255,65,1)]"></div>
+<div class="h-0.5 bg-outline-variant/50"></div>
+</div>
+</main>
+<!-- SideNavBar -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full z-40 flex flex-col bg-surface-container-lowest border-r border-outline-variant/10 w-16 hover:w-64 transition-all duration-500 group font-['JetBrains_Mono'] text-xs uppercase tracking-widest">
+<div class="p-4 flex items-center space-x-3 mb-8">
+<span class="material-symbols-outlined text-primary-container animate-pulse">precision_manufacturing</span>
+<div class="hidden group-hover:block overflow-hidden whitespace-nowrap">
+<div class="text-lg font-black text-[#00FF41] glitch">NODE_01</div>
+<div class="text-[10px] text-on-surface-variant/60">X:124.0 Y:88.2</div>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center space-x-4 bg-primary-container/5 text-[#00FF41] border-l-2 border-[#00FF41] px-4 py-4 hover:bg-primary-container/10 transition-all" href="#">
+<span class="material-symbols-outlined">videocam</span>
+<span class="hidden group-hover:block glitch">TWITCH</span>
+</a>
+<a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="#">
+<span class="material-symbols-outlined">video_library</span>
+<span class="hidden group-hover:block glitch">TIKTOK</span>
+</a>
+<a class="flex items-center space-x-4 text-[#00FF41]/40 px-4 py-4 hover:bg-surface-container-high hover:text-[#00FF41] transition-all" href="#">
+<span class="material-symbols-outlined">photo_camera</span>
+<span class="hidden group-hover:block glitch">INSTAGRAM</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-outline-variant/10 bg-black/20">
+<button class="w-full bg-primary-container text-on-primary-container px-2 py-3 text-[10px] font-bold hidden group-hover:block mb-4 shadow-[0_0_10px_rgba(0,255,65,0.2)] hover:brightness-110 transition-all">
+            CONNECT_WALLET
+        </button>
+<div class="flex items-center space-x-4 text-[#00FF41]/40 px-0 py-3 hover:text-[#00FF41] transition-all cursor-pointer">
+<span class="material-symbols-outlined ml-4">settings</span>
+<span class="hidden group-hover:block">SETTINGS</span>
+</div>
+</div>
+</aside>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 px-8 py-3 flex justify-between items-center bg-surface-container-lowest/90 backdrop-blur-sm border-t border-primary-container/10 font-['JetBrains_Mono'] text-[10px] tracking-[0.2em] uppercase">
+<div class="text-on-surface-variant/30">
+        © 2024 KINETIC_COMMAND // LAYER_HEIGHT: <span class="text-primary-container/60">0.2MM</span>
+</div>
+<div class="hidden md:flex space-x-8">
+<a class="text-[#00FF41]/30 hover:text-[#00FF41] transition-colors relative group" href="#">
+            DOCS
+            <span class="absolute -top-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all"></span>
+</a>
+<a class="text-[#00FF41]/30 hover:text-[#00FF41] transition-colors relative group" href="#">
+            STATUS
+            <span class="absolute -top-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all"></span>
+</a>
+<a class="text-[#00FF41]/30 hover:text-[#00FF41] transition-colors relative group" href="#">
+            SOURCE
+            <span class="absolute -top-1 left-0 w-0 h-[1px] bg-[#00FF41] group-hover:w-full transition-all"></span>
+</a>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_12px_#00FF41] animate-pulse"></div>
+<span class="text-[#00FF41] font-bold">SYSTEM_ONLINE</span>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const assetBtns = document.querySelectorAll('.asset-btn');
+        const placeholder = document.getElementById('terminal-placeholder');
+        const result = document.getElementById('terminal-result');
+        const addressText = document.getElementById('address-text');
+        const qrImage = document.getElementById('qr-image');
+        const terminalStatus = document.getElementById('terminal-status');
+
+        assetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Clear active states
+                assetBtns.forEach(b => b.classList.remove('asset-active'));
+                
+                // Set active state
+                btn.classList.add('asset-active');
+
+                // Update Terminal Content
+                const address = btn.getAttribute('data-address');
+                const qrUrl = btn.getAttribute('data-qr');
+
+                placeholder.classList.add('hidden');
+                result.classList.remove('hidden');
+                result.classList.add('flex');
+                
+                // Typing effect for address
+                addressText.textContent = '';
+                let i = 0;
+                const typeInterval = setInterval(() => {
+                    if (i < address.length) {
+                        addressText.textContent += address.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typeInterval);
+                    }
+                }, 10);
+
+                qrImage.src = qrUrl;
+                
+                // Update status
+                terminalStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> [ STATUS: TRANSMITTING_DATA ]';
+                setTimeout(() => {
+                    terminalStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span> [ STATUS: DATA_READY ]';
+                }, 800);
+            });
+        });
+    });
+</script>
+</body></html>
