@@ -627,10 +627,6 @@
         assetBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const action = btn.getAttribute('data-action') || 'copy';
-                if (action === 'link') {
-                    window.open(btn.getAttribute('data-address'), '_blank');
-                    return;
-                }
 
                 isCopied = false;
                 assetBtns.forEach(b => b.classList.remove('asset-active'));
