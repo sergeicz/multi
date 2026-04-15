@@ -214,7 +214,7 @@
             <h1 class="text-xl md:text-5xl font-headline font-black tracking-tighter text-primary-container typing" data-i18n="name_h1">ИЛЬЯ</h1>
             <p class="font-mono text-[10px] md:text-sm text-on-surface-variant leading-relaxed">
                 <span data-i18n="bio_line1">Занимаюсь разработкой, а для души — фигнёй.</span><br class="hidden md:block"/>
-                <span class="md:hidden"> </span><span data-i18n="bio_line2">Стримлю игры, разговариваю. Подписывайся.</span>
+                <span class="md:hidden"> </span><span data-i18n="bio_line2">Стримлю, играю в симуляторы, разговариваю. Подписывайся.</span>
             </p>
             <div class="hidden md:flex flex-wrap gap-3 pt-2">
                 <span class="font-mono text-[10px] text-primary-container/60 border border-primary-container/20 px-3 py-1" data-i18n="tag_streams">СТРИМЫ</span>
@@ -354,7 +354,7 @@
                         <span class="material-symbols-outlined text-base md:text-lg text-primary-container/60 group-hover:text-primary-container transition-colors flex-shrink-0">favorite</span>
                         <div>
                             <div class="glitch">DonationAlerts</div>
-                            <div class="text-[9px] md:text-[10px] text-on-surface-variant/40 normal-case tracking-normal" data-i18n="da_desc">Рубли — карта, СБП</div>
+                            <div class="text-[9px] md:text-[10px] text-on-surface-variant/40 normal-case tracking-normal" data-i18n="da_desc">Поддержать</div>
                         </div>
                     </div>
                     <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform flex-shrink-0">arrow_forward_ios</span>
@@ -457,8 +457,8 @@
             name_h1: "ILIA",
             typing: "TYPING...",
             hi_label: "// Hi, I'm",
-            bio_line1: "I develop software, and for fun — hardware radio.",
-            bio_line2: "I stream games, chat, and create content. Subscribe.",
+            bio_line1: "I develop, and for fun — nonsense.",
+            bio_line2: "I stream, play simulators, and chat. Subscribe.",
             tag_streams: "STREAMS",
             tag_content: "CONTENT",
             tag_life: "LIFE",
@@ -474,7 +474,7 @@
             support_label: "// Support the project",
             donate_title: "DONATE",
             donate_desc: "Choose a convenient method — we'll show the address and QR code.",
-            da_desc: "Rubles — card, SBP",
+            da_desc: "Support",
             terminal_label: "TERMINAL // ADDRESS",
             status_waiting: "WAITING",
             choose_method: "CHOOSE A METHOD...",
@@ -495,8 +495,8 @@
             name_h1: "ИЛЬЯ",
             typing: "ПЕЧАТАЕТ...",
             hi_label: "// Привет, я",
-            bio_line1: "Занимаюсь разработкой software, а для души — hardware по радиосвязи.",
-            bio_line2: "Стримлю игры, разговариваю. Подписывайся.",
+            bio_line1: "Занимаюсь разработкой, а для души — фигнёй.",
+            bio_line2: "Стримлю, играю в симуляторы, разговариваю. Подписывайся.",
             tag_streams: "СТРИМЫ",
             tag_content: "КОНТЕНТ",
             tag_life: "ЖИЗНЬ",
@@ -512,7 +512,7 @@
             support_label: "// Поддержи проект",
             donate_title: "ЗАДОНАТИТЬ",
             donate_desc: "Выбери удобный способ — покажем адрес и QR-код.",
-            da_desc: "Рубли — карта, СБП",
+            da_desc: "Поддержать",
             terminal_label: "ТЕРМИНАЛ // АДРЕС",
             status_waiting: "ОЖИДАНИЕ",
             choose_method: "ВЫБЕРИ СПОСОБ...",
@@ -626,12 +626,18 @@
 
         assetBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                const action = btn.getAttribute('data-action') || 'copy';
+                if (action === 'link') {
+                    window.open(btn.getAttribute('data-address'), '_blank');
+                    return;
+                }
+
                 isCopied = false;
                 assetBtns.forEach(b => b.classList.remove('asset-active'));
                 btn.classList.add('asset-active');
 
                 currentAddress = btn.getAttribute('data-address');
-                currentAction = btn.getAttribute('data-action') || 'copy';
+                currentAction = action;
                 const qrUrl = btn.getAttribute('data-qr');
 
                 placeholder.classList.add('hidden');
