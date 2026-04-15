@@ -1,3 +1,5 @@
 .claude/
 .DS_Store
 Thumbs.db
+analytics.md
+.playwright-mcp/

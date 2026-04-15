@@ -621,9 +621,31 @@
         const langBtn = document.getElementById('lang-switch');
         if (langBtn) {
             langBtn.addEventListener('click', () => {
-                applyLang(currentLang === 'ru' ? 'en' : 'ru');
+                const newLang = currentLang === 'ru' ? 'en' : 'ru';
+                applyLang(newLang);
+                gtag('event', 'switch_language', { language: newLang });
             });
         }
+
+        // Social links click tracking
+        const linkLabels = {
+            'pushkarev.online': 'site',
+            'twitch.tv': 'twitch',
+            'youtube.com': 'youtube',
+            'tiktok.com': 'tiktok',
+            'tgtrack.ru': 'telegram',
+            't.me': 'telegram',
+            'max.ru': 'max',
+        };
+        document.querySelectorAll('a[target="_blank"]').forEach(link => {
+            link.addEventListener('click', () => {
+                const url = link.href;
+                const label = Object.keys(linkLabels).find(k => url.includes(k));
+                if (label) {
+                    gtag('event', 'click_link', { link_name: linkLabels[label], link_url: url });
+                }
+            });
+        });
 
         const assetBtns = document.querySelectorAll('.asset-btn');
         const placeholder = document.getElementById('terminal-placeholder');
@@ -635,9 +657,20 @@
         const copyLabel = document.getElementById('copy-label');
         const copyIcon = document.getElementById('copy-icon');
 
+        const assetNames = {
+            'TUnZdiHUxH4ErKqNmBEjL7zu8ogLGE6Y9q': 'usdt',
+            'bc1q8f6dfae59sjf3dksc39qw9k3pmakngymcumg49': 'btc',
+            '0xf106Ea1d77d15989090Ae3E0C26c6cF12FD14cBB': 'eth',
+            'donationalerts': 'donationalerts',
+        };
+
         assetBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const action = btn.getAttribute('data-action') || 'copy';
+                const addr = btn.getAttribute('data-address') || '';
+                const assetKey = Object.keys(assetNames).find(k => addr.includes(k));
+                const assetName = assetKey ? assetNames[assetKey] : 'unknown';
+                gtag('event', 'select_payment', { method: assetName });
 
                 isCopied = false;
                 assetBtns.forEach(b => b.classList.remove('asset-active'));
@@ -684,12 +717,16 @@
             if (!currentAddress) return;
             const t = i18n[currentLang];
             if (currentAction === 'link') {
+                gtag('event', 'click_donate', { platform: 'donationalerts' });
                 window.open(currentAddress, '_blank');
             } else {
                 navigator.clipboard.writeText(currentAddress).then(() => {
                     isCopied = true;
                     copyLabel.textContent = t.copied;
                     setTimeout(() => { copyLabel.textContent = t.copy_address_btn; isCopied = false; }, 2000);
+                    const assetKey = Object.keys(assetNames).find(k => currentAddress.includes(k));
+                    const assetName = assetKey ? assetNames[assetKey] : 'unknown';
+                    gtag('event', 'copy_address', { method: assetName });
                 });
             }
         });
